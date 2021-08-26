@@ -3,7 +3,7 @@ import re
 
 WHITESPACE = ''
 
-IDCHAR_PUNCTUATION = '_-./~'
+IDCHAR_PUNCTUATION = '_-./~%'
 
 NOT_IDCHAR = ''.join([c for c in (chr(i) for i in range(127))
                       if not (c.isalnum()

@@ -26,6 +26,9 @@ class TestEncoder(unittest.TestCase):
         self.assertEqual("(a:0)", prison.dumps({
             'a': 0
         }))
+        self.assertEqual("(a:%)", prison.dumps({
+            'a': '%'
+        }))
 
     def test_bool(self):
         self.assertEqual('!t', prison.dumps(True))
@@ -59,4 +62,3 @@ class TestEncoder(unittest.TestCase):
         self.assertEqual("'user@domain.com'", prison.dumps('user@domain.com'))
         self.assertEqual("'US $10'", prison.dumps('US $10'))
         self.assertEqual("'can!'t'", prison.dumps("can't"))
-

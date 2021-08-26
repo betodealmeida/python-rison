@@ -26,6 +26,9 @@ class TestDecoder(unittest.TestCase):
         self.assertEqual(prison.loads("(a:0)"), {
             'a': 0
         })
+        self.assertEqual(prison.loads("(a:%)"), {
+            'a': '%'
+        })
 
     def test_bool(self):
         self.assertEqual(prison.loads('!t'), True)
