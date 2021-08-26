@@ -29,6 +29,9 @@ class TestEncoder(unittest.TestCase):
         self.assertEqual("(a:%)", prison.dumps({
             'a': '%'
         }))
+        self.assertEqual("(a:/w+/)", prison.dumps({
+            'a': '/w+/'
+        }))
 
     def test_bool(self):
         self.assertEqual('!t', prison.dumps(True))
