@@ -13,13 +13,13 @@ class Encoder(object):
 
     @staticmethod
     def encoder(v):
-        if isinstance(v, list):
+        if isinstance(v, (list, tuple)):
             return Encoder.list
         elif isinstance(v, string_types):
             return Encoder.string
         elif isinstance(v, bool):
             return Encoder.bool
-        elif isinstance(v, (float, int)):
+        elif isinstance(v, (float, int, long)):
             return Encoder.number
         elif isinstance(v, type(None)):
             return Encoder.none
