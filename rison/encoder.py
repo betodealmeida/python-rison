@@ -1,25 +1,20 @@
 import re
 
-from six import string_types
-
 from .utils import quote
 from .constants import ID_OK_RE
 
 
-class Encoder(object):
-
-    def __init__(self):
-        pass
+class Encoder:
 
     @staticmethod
     def encoder(v):
         if isinstance(v, (list, tuple)):
             return Encoder.list
-        elif isinstance(v, string_types):
+        elif isinstance(v, str):
             return Encoder.string
         elif isinstance(v, bool):
             return Encoder.bool
-        elif isinstance(v, (float, int, long)):
+        elif isinstance(v, (float, int)):
             return Encoder.number
         elif isinstance(v, type(None)):
             return Encoder.none
@@ -42,7 +37,7 @@ class Encoder(object):
             f = Encoder.encoder(v)
             if f:
                 v = f(v)
-                if isinstance(v, string_types):
+                if isinstance(v, str):
                     if b:
                         a.append(',')
                     a.append(v)
@@ -71,9 +66,7 @@ class Encoder(object):
             return v
 
         def replace(match):
-            if match.group(0) in ["'", '!']:
-                return '!' + match.group(0)
-            return match.group(0)
+            return '!' + match.group(0)
 
         v = re.sub(r'([\'!])', replace, v)
 
@@ -89,7 +82,7 @@ class Encoder(object):
             f = Encoder.encoder(v)
             if f:
                 v = f(v)
-                if isinstance(v, string_types):
+                if isinstance(v, str):
                     if b:
                         a.append(',')
                     a.append(Encoder.string(i))

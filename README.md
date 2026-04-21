@@ -1,16 +1,16 @@
-# Prison, a Python encoder/decoder for Rison
+# rison, a Python encoder/decoder for Rison
 
 ## Quickstart
 
 ```bash
-$ pip install prison
+$ pip install rison
 ```
 
 ```python
->>> import prison
->>> prison.dumps({'foo': 'bar'})
+>>> import rison
+>>> rison.dumps({'foo': 'bar'})
 '(foo:bar)'
->>> prison.loads('(foo:bar)')
+>>> rison.loads('(foo:bar)')
 {'foo': 'bar'}
 ```
 
@@ -251,4 +251,4 @@ Modified from the [json.org](https://web.archive.org/web/20130910064110/http://j
 
 Rison original website is now dead. You can find an archive [here](https://web.archive.org/web/20130910064110/http://www.mjtemplate.org/examples/rison.html).
 
-Prison was forked from https://github.com/pifantastic/python-rison and updated for Python 3 compatibility. It was named "prison" because the original "rison" package entry still exists in PyPI, although without a downloadable link.
+This package was originally forked from https://github.com/pifantastic/python-rison and published to PyPI as "prison" (Python + Rison) because the "rison" name was taken. Starting with version 2.0.0, the package has been renamed to "rison", modernized for Python 3.10+, and all Python 2 dependencies have been removed.
