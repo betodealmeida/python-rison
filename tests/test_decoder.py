@@ -38,8 +38,8 @@ class TestDecoder(unittest.TestCase):
         self.assertEqual(prison.loads('!f'), False)
 
     def test_invalid(self):
-        with self.assertRaises(prison.decoder.ParserException):
-            prison.loads('(')
+        self.assertRaisesRegex(prison.decoder.ParserException, r"unmatched '\('", prison.loads, '(')
+        self.assertRaisesRegex(prison.decoder.ParserException, r"unmatched '\('", prison.loads, '(a:(')
 
     def test_none(self):
         self.assertEqual(prison.loads('!n'), None)

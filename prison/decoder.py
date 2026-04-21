@@ -19,8 +19,6 @@ class Parser(object):
     This parser supports RISON, RISON-A and RISON-O.
     """
     def parse(self, string, format=str):
-        if string == "(":
-            raise ParserException("unmatched '('")
         if format in [list, 'A']:
             self.string = "!({0})".format(string)
         elif format in [dict, 'O']:
@@ -111,6 +109,8 @@ class Parser(object):
                     raise ParserException("missing ','")
             elif c == ',':
                 raise ParserException("extra ','")
+            elif c is None:
+                raise ParserException("unmatched '('")
             else:
                 self.index -= 1
             k = self.read_value()
