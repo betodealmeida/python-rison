@@ -9,7 +9,7 @@ class ParserException(Exception):
     pass
 
 
-class Parser(object):
+class Parser:
 
     def __init__(self):
         self.string = None
@@ -45,7 +45,7 @@ class Parser(object):
             return self.parse_open_paren()
         if c == "'":
             return self.parse_single_quote()
-        if c in '-0123456789':
+        if c is not None and c in '-0123456789':
             return self.parse_number()
 
         # fell through table, parse as an id
@@ -84,10 +84,10 @@ class Parser(object):
 
     def parse_bang(self):
         s = self.string
+        if self.index >= len(s):
+            raise ParserException('"!" at end of input')
         c = s[self.index]
         self.index += 1
-        if c is None:
-            raise ParserException('"!" at end of input')
         if c not in self.bangs:
             raise ParserException('unknown literal: "!' + c + '"')
         x = self.bangs[c]
