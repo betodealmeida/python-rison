@@ -6,13 +6,42 @@
 $ pip install rison
 ```
 
+For Pygments lexer support:
+
+```bash
+$ pip install "rison[pygments]"
+```
+
 ```python
 >>> import rison
 >>> rison.dumps({'foo': 'bar'})
 '(foo:bar)'
 >>> rison.loads('(foo:bar)')
 {'foo': 'bar'}
+>>> rison.dumps({'foo': 'bar'}, format='O')
+'foo:bar'
+>>> rison.dumps(['foo', 'bar'], format='A')
+'foo,bar'
 ```
+
+## API notes
+
+`dumps()` accepts a `format` argument:
+
+- `format=str` (default): full RISON output (for example `(a:1)` or `!(1,2)`)
+- `format=dict` or `format='O'`: O-RISON output (outer `(` and `)` omitted)
+- `format=list` or `format='A'`: A-RISON output (outer `!(` and `)` omitted)
+
+### Pygments lexers
+
+This package registers Pygments entry points for:
+
+- `rison`
+- `orison` / `o-rison`
+- `arison` / `a-rison`
+
+These are exposed through `project.entry-points."pygments.lexers"`.
+Install the optional extra (`rison[pygments]`) to use them.
 
 ## Rison - Compact Data in URIs
 
@@ -246,6 +275,14 @@ Modified from the [json.org](https://web.archive.org/web/20130910064110/http://j
 - _e_
   - `e`
   - `e-`
+
+## Changelog
+
+### Unreleased
+
+- Added typed APIs and module annotations across the package and tests.
+- Added O-RISON and A-RISON support to `dumps()` via the `format` argument.
+- Added Pygments lexers for RISON, O-RISON, and A-RISON with registered entry points.
 
 ## History
 

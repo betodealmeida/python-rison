@@ -8,7 +8,7 @@ except ImportError:
 
 class TestDecoder(unittest.TestCase):
 
-    def test_dict(self):
+    def test_dict(self) -> None:
         self.assertEqual(rison.loads('()'), {})
         self.assertEqual(rison.loads('(a:0,b:1)'), {
             'a': 0,
@@ -33,30 +33,30 @@ class TestDecoder(unittest.TestCase):
             'a': '/w+/'
         })
 
-    def test_bool(self):
+    def test_bool(self) -> None:
         self.assertEqual(rison.loads('!t'), True)
         self.assertEqual(rison.loads('!f'), False)
 
-    def test_invalid(self):
+    def test_invalid(self) -> None:
         self.assertRaisesRegex(rison.decoder.ParserException, r"unmatched '\('", rison.loads, '(')
         self.assertRaisesRegex(rison.decoder.ParserException, r"unmatched '\('", rison.loads, '(a:(')
 
-    def test_none(self):
+    def test_none(self) -> None:
         self.assertEqual(rison.loads('!n'), None)
 
-    def test_list(self):
+    def test_list(self) -> None:
         self.assertEqual(rison.loads('!(1,2,3)'), [1, 2, 3])
         self.assertEqual(rison.loads('!()'), [])
         self.assertEqual(rison.loads("!(!t,!f,!n,'')"), [True, False, None, ''])
 
-    def test_number(self):
+    def test_number(self) -> None:
         self.assertEqual(rison.loads('0'), 0)
         self.assertEqual(rison.loads('1.5'), 1.5)
         self.assertEqual(rison.loads('-3'), -3)
         self.assertEqual(rison.loads('1e30'), 1e+30)
         self.assertEqual(rison.loads('1e-30'), 1.0000000000000001e-30)
 
-    def test_string(self):
+    def test_string(self) -> None:
         self.assertEqual(rison.loads("''"), '')
         self.assertEqual(rison.loads('G.'), 'G.')
         self.assertEqual(rison.loads('a'), 'a')
@@ -70,73 +70,73 @@ class TestDecoder(unittest.TestCase):
         self.assertEqual(rison.loads("'US $10'"), 'US $10')
         self.assertEqual(rison.loads("'can!'t'"), "can't")
 
-    def test_a_rison_format(self):
+    def test_a_rison_format(self) -> None:
         self.assertEqual(rison.loads('1,2,3', format=list), [1, 2, 3])
         self.assertEqual(rison.loads('1,2,3', format='A'), [1, 2, 3])
 
-    def test_o_rison_format(self):
+    def test_o_rison_format(self) -> None:
         self.assertEqual(rison.loads('a:1,b:2', format=dict), {'a': 1, 'b': 2})
         self.assertEqual(rison.loads('a:1,b:2', format='O'), {'a': 1, 'b': 2})
 
-    def test_invalid_format(self):
+    def test_invalid_format(self) -> None:
         with self.assertRaises(ValueError):
             rison.loads('a', format=int)
 
-    def test_trailing_content(self):
+    def test_trailing_content(self) -> None:
         with self.assertRaises(rison.decoder.ParserException):
             rison.loads('(a:0)b')
 
-    def test_invalid_character(self):
+    def test_invalid_character(self) -> None:
         with self.assertRaises(rison.decoder.ParserException):
             rison.loads(')')
 
-    def test_empty_expression(self):
+    def test_empty_expression(self) -> None:
         with self.assertRaises(rison.decoder.ParserException):
             rison.loads('')
 
-    def test_unmatched_array(self):
+    def test_unmatched_array(self) -> None:
         with self.assertRaises(rison.decoder.ParserException):
             rison.loads('!(1,2')
 
-    def test_array_missing_comma(self):
+    def test_array_missing_comma(self) -> None:
         with self.assertRaises(rison.decoder.ParserException):
             rison.loads('!(1 2)')
 
-    def test_array_extra_comma(self):
+    def test_array_extra_comma(self) -> None:
         with self.assertRaises(rison.decoder.ParserException):
             rison.loads('!(,1)')
 
-    def test_unknown_bang_literal(self):
+    def test_unknown_bang_literal(self) -> None:
         with self.assertRaises(rison.decoder.ParserException):
             rison.loads('!x')
 
-    def test_bang_at_end_of_input(self):
+    def test_bang_at_end_of_input(self) -> None:
         with self.assertRaises(rison.decoder.ParserException):
             rison.loads('!')
 
-    def test_dict_missing_comma(self):
+    def test_dict_missing_comma(self) -> None:
         with self.assertRaises(rison.decoder.ParserException):
             rison.loads('(a:0 b:1)')
 
-    def test_dict_extra_comma(self):
+    def test_dict_extra_comma(self) -> None:
         with self.assertRaises(rison.decoder.ParserException):
             rison.loads('(,a:0)')
 
-    def test_dict_missing_colon(self):
+    def test_dict_missing_colon(self) -> None:
         with self.assertRaises(rison.decoder.ParserException):
             rison.loads('(a 0)')
 
-    def test_unmatched_single_quote(self):
+    def test_unmatched_single_quote(self) -> None:
         with self.assertRaises(rison.decoder.ParserException):
             rison.loads("'abc")
 
-    def test_invalid_string_escape(self):
+    def test_invalid_string_escape(self) -> None:
         with self.assertRaises(rison.decoder.ParserException):
             rison.loads("'a!b'")
 
-    def test_invalid_number(self):
+    def test_invalid_number(self) -> None:
         with self.assertRaises(rison.decoder.ParserException):
             rison.loads('(-)')
 
-    def test_number_with_frac_and_exp(self):
+    def test_number_with_frac_and_exp(self) -> None:
         self.assertEqual(rison.loads('1.5e2'), 150.0)

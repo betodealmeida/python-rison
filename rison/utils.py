@@ -1,11 +1,12 @@
 import re
+from re import Pattern
 from urllib.parse import quote as urllib_quote
 
 
-RE_QUOTE = re.compile('^[-A-Za-z0-9~!*()_.\',:@$/]*$')
+RE_QUOTE: Pattern[str] = re.compile(r"^[-A-Za-z0-9~!*()_.',:@$/]*$")
 
 
-def quote(x):
+def quote(x: str) -> str:
     if RE_QUOTE.match(x):
         return x
 

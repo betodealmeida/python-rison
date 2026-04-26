@@ -27,7 +27,13 @@ classifiers = [
 Homepage = "https://github.com/betodealmeida/python-rison"
 
 [project.optional-dependencies]
-dev = ["pytest", "pytest-cov"]
+pygments = ["pygments>=2.0"]
+dev = ["pytest", "pytest-cov", "pygments>=2.0"]
+
+[project.entry-points."pygments.lexers"]
+rison = "rison.lexers:RisonLexer"
+orison = "rison.lexers:ORisonLexer"
+arison = "rison.lexers:ARisonLexer"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

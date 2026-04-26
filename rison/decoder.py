@@ -1,8 +1,12 @@
 # encoding: utf-8
 
 import re
+from typing import Any, Literal
 
 from .constants import NEXT_ID_RE, WHITESPACE
+
+
+Format = type[str] | type[list[Any]] | type[dict[str, Any]] | Literal['A', 'O']
 
 
 class ParserException(Exception):
@@ -11,32 +15,32 @@ class ParserException(Exception):
 
 class Parser:
 
-    def __init__(self):
-        self.string = None
-        self.index = 0
+    def __init__(self) -> None:
+        self.string: str = ''
+        self.index: int = 0
 
     """
     This parser supports RISON, RISON-A and RISON-O.
     """
-    def parse(self, string, format=str):
-        if format in [list, 'A']:
-            self.string = "!({0})".format(string)
-        elif format in [dict, 'O']:
-            self.string = "({0})".format(string)
+    def parse(self, string: str, format: Format = str) -> Any:
+        if format in (list, 'A'):
+            self.string = f'!({string})'
+        elif format in (dict, 'O'):
+            self.string = f'({string})'
         elif format is str:
             self.string = string
         else:
             raise ValueError("""Parse format should be one of str, list, dict,
-                'A' (alias for list), '0' (alias for dict).""")
+                'A' (alias for list), 'O' (alias for dict).""")
 
         self.index = 0
 
         value = self.read_value()
         if self.next():
-            raise ParserException("unable to parse rison string %r" % (string,))
+            raise ParserException(f'unable to parse rison string {string!r}')
         return value
 
-    def read_value(self):
+    def read_value(self) -> Any:
         c = self.next()
 
         if c == '!':
@@ -50,7 +54,7 @@ class Parser:
 
         # fell through table, parse as an id
         s = self.string
-        i = self.index-1
+        i = self.index - 1
 
         m = NEXT_ID_RE.match(s, i)
         if m:
@@ -62,9 +66,9 @@ class Parser:
             raise ParserException("invalid character: '" + c + "'")
         raise ParserException("empty expression")
 
-    def parse_array(self):
-        ar = []
-        while 1:
+    def parse_array(self) -> list[Any]:
+        ar: list[Any] = []
+        while True:
             c = self.next()
             if c == ')':
                 return ar
@@ -82,7 +86,7 @@ class Parser:
             n = self.read_value()
             ar.append(n)
 
-    def parse_bang(self):
+    def parse_bang(self) -> Any:
         s = self.string
         if self.index >= len(s):
             raise ParserException('"!" at end of input')
@@ -96,11 +100,11 @@ class Parser:
 
         return x
 
-    def parse_open_paren(self):
+    def parse_open_paren(self) -> dict[str, Any]:
         count = 0
-        o = {}
+        o: dict[str, Any] = {}
 
-        while 1:
+        while True:
             c = self.next()
             if c == ')':
                 return o
@@ -122,13 +126,13 @@ class Parser:
             o[k] = v
             count += 1
 
-    def parse_single_quote(self):
+    def parse_single_quote(self) -> str:
         s = self.string
         i = self.index
         start = i
-        segments = []
+        segments: list[str] = []
 
-        while 1:
+        while True:
             if i >= len(s):
                 raise ParserException('unmatched "\'"')
 
@@ -138,27 +142,27 @@ class Parser:
                 break
 
             if c == '!':
-                if start < i-1:
-                    segments.append(s[start:i-1])
+                if start < i - 1:
+                    segments.append(s[start : i - 1])
                 c = s[i]
                 i += 1
                 if c in "!'":
                     segments.append(c)
                 else:
-                    raise ParserException('invalid string escape: "!'+c+'"')
+                    raise ParserException(f'invalid string escape: "!{c}"')
 
                 start = i
 
-        if start < i-1:
-            segments.append(s[start:i-1])
+        if start < i - 1:
+            segments.append(s[start : i - 1])
         self.index = i
         return ''.join(segments)
 
     # Also any number start (digit or '-')
-    def parse_number(self):
+    def parse_number(self) -> int | float:
         s = self.string
         i = self.index
-        start = i-1
+        start = i - 1
         state = 'int'
         permitted_signs = '-'
         transitions = {
@@ -167,7 +171,7 @@ class Parser:
             'frac+e': 'exp'
         }
 
-        while 1:
+        while True:
             if i >= len(s):
                 i += 1
                 break
@@ -197,11 +201,11 @@ class Parser:
         return int(s)
 
     # return the next non-whitespace character, or undefined
-    def next(self):
+    def next(self) -> str | None:
         s = self.string
         i = self.index
 
-        while 1:
+        while True:
             if i == len(s):
                 return None
             c = s[i]
@@ -212,7 +216,7 @@ class Parser:
         self.index = i
         return c
 
-    bangs = {
+    bangs: dict[str, Any] = {
         't': True,
         'f': False,
         'n': None,
@@ -220,5 +224,5 @@ class Parser:
     }
 
 
-def loads(s, format=str):
+def loads(s: str, format: Format = str) -> Any:
     return Parser().parse(s, format=format)

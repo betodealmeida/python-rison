@@ -1,71 +1,72 @@
 import re
+from collections.abc import Callable, Mapping, Sequence
+from typing import Any, Literal
 
 from .utils import quote
 from .constants import ID_OK_RE
 
 
+Format = type[str] | type[list[Any]] | type[dict[str, Any]] | Literal['A', 'O']
+EncodeFn = Callable[[Any], str]
+
+
 class Encoder:
 
     @staticmethod
-    def encoder(v):
+    def encoder(v: Any) -> EncodeFn:
         if isinstance(v, (list, tuple)):
             return Encoder.list
-        elif isinstance(v, str):
+        if isinstance(v, str):
             return Encoder.string
-        elif isinstance(v, bool):
+        if isinstance(v, bool):
             return Encoder.bool
-        elif isinstance(v, (float, int)):
+        if isinstance(v, (float, int)):
             return Encoder.number
-        elif isinstance(v, type(None)):
+        if isinstance(v, type(None)):
             return Encoder.none
-        elif isinstance(v, dict):
+        if isinstance(v, dict):
             return Encoder.dict
-        else:
-            raise AssertionError('Unable to encode type: {0}'.format(type(v)))
+        raise AssertionError(f'Unable to encode type: {type(v)}')
 
     @staticmethod
-    def encode(v):
+    def encode(v: Any) -> str:
         encoder = Encoder.encoder(v)
         return encoder(v)
 
     @staticmethod
-    def list(x):
-        a = ['!(']
-        b = None
-        for i in range(len(x)):
-            v = x[i]
-            f = Encoder.encoder(v)
-            if f:
-                v = f(v)
-                if isinstance(v, str):
-                    if b:
-                        a.append(',')
-                    a.append(v)
-                    b = True
+    def list(x: Sequence[Any]) -> str:
+        a: list[str] = ['!(']
+        has_values = False
+        for value in x:
+            encoded = Encoder.encoder(value)(value)
+            if has_values:
+                a.append(',')
+            a.append(encoded)
+            has_values = True
         a.append(')')
         return ''.join(a)
 
     @staticmethod
-    def number(v):
+    def number(v: float | int) -> str:
         return str(v).replace('+', '')
 
     @staticmethod
-    def none(_):
+    def none(_: None) -> str:
         return '!n'
 
     @staticmethod
-    def bool(v):
+    def bool(v: bool) -> str:
         return '!t' if v else '!f'
 
     @staticmethod
-    def string(v):
+    def string(v: str) -> str:
         if v == '':
             return "''"
 
         if ID_OK_RE.match(v):
             return v
 
-        def replace(match):
+        def replace(match: re.Match[str]) -> str:
             return '!' + match.group(0)
 
         v = re.sub(r'([\'!])', replace, v)
@@ -73,44 +74,52 @@ class Encoder:
         return "'" + v + "'"
 
     @staticmethod
-    def dict(x):
-        a = ['(']
-        b = None
-        ks = sorted(x.keys())
-        for i in ks:
-            v = x[i]
-            f = Encoder.encoder(v)
-            if f:
-                v = f(v)
-                if isinstance(v, str):
-                    if b:
-                        a.append(',')
-                    a.append(Encoder.string(i))
-                    a.append(':')
-                    a.append(v)
-                    b = True
+    def dict(x: Mapping[str, Any]) -> str:
+        a: list[str] = ['(']
+        has_values = False
+        for key in sorted(x.keys()):
+            encoded = Encoder.encoder(x[key])(x[key])
+            if has_values:
+                a.append(',')
+            a.append(Encoder.string(key))
+            a.append(':')
+            a.append(encoded)
+            has_values = True
 
         a.append(')')
         return ''.join(a)
 
 
-def encode_array(v):
+def encode_array(v: list[Any]) -> str:
     if not isinstance(v, list):
         raise AssertionError('encode_array expects a list argument')
-    r = dumps(v)
-    return r[2, len(r)-1]
+    return dumps(v, format='A')
 
 
-def encode_object(v):
-    if not isinstance(v, dict) or v is None or isinstance(v, list):
+def encode_object(v: dict[str, Any]) -> str:
+    if not isinstance(v, dict):
         raise AssertionError('encode_object expects an dict argument')
-    r = dumps(v)
-    return r[1, len(r)-1]
+    return dumps(v, format='O')
 
 
-def encode_uri(v):
+def encode_uri(v: Any) -> str:
     return quote(dumps(v))
 
 
-def dumps(string):
-    return Encoder.encode(string)
+def dumps(value: Any, format: Format = str) -> str:
+    encoded = Encoder.encode(value)
+
+    if format in (str,):
+        return encoded
+    if format in (list, 'A'):
+        if not isinstance(value, (list, tuple)):
+            raise ValueError('A-RISON output format requires a list or tuple input.')
+        return encoded[2:-1]
+    if format in (dict, 'O'):
+        if not isinstance(value, dict):
+            raise ValueError("O-RISON output format requires a dict input.")
+        return encoded[1:-1]
+
+    raise ValueError(
+        "Dump format should be one of str, list, dict, 'A' (alias for list), 'O' (alias for dict)."
+    )
