@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "rison"
-version = "2.0.0"
+version = "2.0.1"
 description = "Rison encoder/decoder"
 readme = "README.md"
 license = "MIT"
