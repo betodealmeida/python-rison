@@ -1,11 +1,8 @@
 import os
 import sys
 
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-sys.path.insert(0, os.path.abspath(
-    os.path.join(os.path.dirname(__file__), '..')))
+import rison  # noqa: E402
 
-import rison
-
-
-__all__ = ['rison']
+__all__ = ["rison"]

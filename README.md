@@ -45,9 +45,9 @@ Install the optional extra (`rison[pygments]`) to use them.
 
 ## Rison - Compact Data in URIs
 
-This page describes *Rison*, a data serialization format optimized for compactness in URIs. Rison is a slight variation of JSON that looks vastly superior after URI encoding. Rison still expresses exactly the same set of data structures as JSON, so data can be translated back and forth without loss or guesswork. 
+This page describes *Rison*, a data serialization format optimized for compactness in URIs. Rison is a slight variation of JSON that looks vastly superior after URI encoding. Rison still expresses exactly the same set of data structures as JSON, so data can be translated back and forth without loss or guesswork.
 
-You can skip straight to some [examples](#examples), or read on for more background. 
+You can skip straight to some [examples](#examples), or read on for more background.
 
 ### Why another data serialization format?
 
@@ -73,23 +73,23 @@ Given that a new syntax is needed, Rison tries to innovate as little as possible
 
 ### Differences from JSON syntax
 
-  * no whitespace is permitted except inside quoted strings. 
-  * almost all character escaping is left to the uri encoder. 
-  * single-quotes are used for quoting, but quotes can and should be left off strings when the strings are simple identifiers. 
-  * the `e+` exponent format is forbidden, since `+` is not safe in form values and the plain `e` format is equivalent. 
-  * the `E`, `E+`, and `E` exponent formats are removed. 
-  * object keys should be lexically sorted when encoding. the intent is to improve url cacheability. 
-  * uri-safe tokens are used in place of the standard json tokens: 
-    
+  * no whitespace is permitted except inside quoted strings.
+  * almost all character escaping is left to the uri encoder.
+  * single-quotes are used for quoting, but quotes can and should be left off strings when the strings are simple identifiers.
+  * the `e+` exponent format is forbidden, since `+` is not safe in form values and the plain `e` format is equivalent.
+  * the `E`, `E+`, and `E` exponent formats are removed.
+  * object keys should be lexically sorted when encoding. the intent is to improve url cacheability.
+  * uri-safe tokens are used in place of the standard json tokens:
+
     |rison token|json token|meaning      |
     |:----------|:---------|:------------|
     |`'`        |`"`       |string quote |
     |`!`        |`\`       |string escape|
     |`(...)`    |`{...}`   |object       |
     |`!(...)`   |`[...]`   |array        |
-    
-  * the JSON literals that look like identifiers (`true`, `false` and `null`) are represented as `!` sequences: 
-    
+
+  * the JSON literals that look like identifiers (`true`, `false` and `null`) are represented as `!` sequences:
+
     |rison token|json token|
     |:----------|:---------|
     |`!t`       |`true`    |
@@ -117,7 +117,7 @@ This still needs to be addressed. Advice from an IRI expert would be very welcom
 
 Particular attention should be paid to Unicode characters that may be interpreted as Rison syntax characters.
 
-The *idchars* set is hard to define well. The goal is to include foreign language alphanumeric characters and some punctuation that is common in identifiers (`_`, `-`, `.`, `/`, and others). However, whitespace and most punctuation characters should require quoting. 
+The *idchars* set is hard to define well. The goal is to include foreign language alphanumeric characters and some punctuation that is common in identifiers (`_`, `-`, `.`, `/`, and others). However, whitespace and most punctuation characters should require quoting.
 
 ### Emailing URIs
 
@@ -135,7 +135,7 @@ This is actually a problem with URI encoding rather than with Rison, but it come
 
 ### Variations
 
-There are several variations on Rison which are useful or at least thought-provoking. 
+There are several variations on Rison which are useful or at least thought-provoking.
 
 #### O-Rison
 
@@ -160,7 +160,7 @@ Notice that O-Rison looks almost like a drop-in replacement for [URL form encodi
 
 We could expand the Rison parser to treat all of `,`, `&`, and `;` as valid item separators and both `:` and `=` as key-value separators. In this case the vast majority of URI queries would form a flat subset of O-Rison. The exceptions are services that depend on ordering of query parameters or allow duplicate parameter names.
 
-This extension doesn't change the parsing of standard Rison strings because `&`, `=`, and `;` are already illegal in Rison identifiers. 
+This extension doesn't change the parsing of standard Rison strings because `&`, `=`, and `;` are already illegal in Rison identifiers.
 
 ### Examples
 
@@ -195,7 +195,7 @@ The compression ratio column shows (1 - encoded_rison_size / encoded_json_size).
 
 On a log of Freebase mqlread service URIs, the queries were from 35% to 45% smaller when encoded with Rison.
 
-URI encoding is done with a custom URI encoder which is less aggressive than Javascript's built-in `encodeURIComponent()`. 
+URI encoding is done with a custom URI encoder which is less aggressive than Javascript's built-in `encodeURIComponent()`.
 
 ### Grammar
 
