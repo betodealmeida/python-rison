@@ -1,0 +1,49 @@
+repos:
+  # Import sorting
+- repo: https://github.com/PyCQA/isort
+  rev: 5.13.2
+  hooks:
+    - id: isort
+
+  # Code formatting
+- repo: https://github.com/psf/black
+  rev: 26.3.1
+  hooks:
+    - id: black
+      args: [--quiet, --target-version, py311]
+
+  # Linting
+- repo: https://github.com/PyCQA/flake8
+  rev: 7.1.1
+  hooks:
+    - id: flake8
+
+  # Enforce type checking
+- repo: https://github.com/pre-commit/mirrors-mypy
+  rev: v1.11.2
+  hooks:
+    - id: mypy
+      additional_dependencies:
+        - types-requests
+        - types-python-dateutil
+        - types-PyYAML
+        - types-tabulate
+
+  # Upgrade syntax to modern Python
+- repo: https://github.com/asottile/pyupgrade
+  rev: v3.17.0
+  hooks:
+    - id: pyupgrade
+      args: [--py39-plus]
+
+  # Trim trailing whitespace, fix line endings, ensure final newline, and validate data files
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v5.0.0
+  hooks:
+    - id: end-of-file-fixer
+    - id: trailing-whitespace
+    - id: mixed-line-ending
+      args: [--fix=auto]
+    - id: check-json
+    - id: check-xml
+    - id: check-yaml

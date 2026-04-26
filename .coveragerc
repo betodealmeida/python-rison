@@ -1,0 +1,18 @@
+[run]
+branch = True
+source = rison
+
+[paths]
+source =
+    src/
+
+[report]
+exclude_lines =
+    # Have to re-enable the standard pragma
+    pragma: no cover
+    NotImplementedError
+    TYPE_CHECKING
+    : \.\.\.$
+
+fail_under = 100
+show_missing = True
