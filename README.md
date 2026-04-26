@@ -280,9 +280,15 @@ Modified from the [json.org](https://web.archive.org/web/20130910064110/http://j
 
 ### Unreleased
 
+### 2.0.1 2026-04-26
+
 - Added typed APIs and module annotations across the package and tests.
 - Added O-RISON and A-RISON support to `dumps()` via the `format` argument.
 - Added Pygments lexers for RISON, O-RISON, and A-RISON with registered entry points.
+
+### 2.0.0 2026-04-21
+
+- Modernization of the codebase, dropping support for Python 2.
 
 ## History
 
