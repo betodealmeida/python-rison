@@ -43,6 +43,44 @@ This package registers Pygments entry points for:
 These are exposed through `project.entry-points."pygments.lexers"`.
 Install the optional extra (`rison[pygments]`) to use them.
 
+## CLI
+
+This package includes a `rison` command that converts RISON to JSON.
+
+```bash
+$ echo "(b:2,a:1)" | rison
+{"b": 2, "a": 1}
+```
+
+Pipe to `jq` if you want pretty output or filtering:
+
+```bash
+$ echo "(b:2,a:1)" | rison | jq
+{
+  "b": 2,
+  "a": 1
+}
+```
+
+You can pass a file path instead of stdin:
+
+```bash
+$ rison query.rison
+```
+
+Use `--format` to force parsing mode (`auto`, `rison`, `o-rison`, `a-rison`):
+
+```bash
+$ rison --format o-rison query.orison
+```
+
+Use `--reverse` to convert JSON to RISON:
+
+```bash
+$ echo '{"b":2,"a":1}' | rison --reverse
+(a:1,b:2)
+```
+
 ## Rison - Compact Data in URIs
 
 This page describes *Rison*, a data serialization format optimized for compactness in URIs. Rison is a slight variation of JSON that looks vastly superior after URI encoding. Rison still expresses exactly the same set of data structures as JSON, so data can be translated back and forth without loss or guesswork.
@@ -279,6 +317,8 @@ Modified from the [json.org](https://web.archive.org/web/20130910064110/http://j
 ## Changelog
 
 ### Unreleased
+
+- Add a CLI to convert from JSON to RISON and vice-versa.
 
 ### 2.0.1 2026-04-26
 

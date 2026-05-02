@@ -109,4 +109,4 @@ class TestEncoder(unittest.TestCase):
     def test_version(self) -> None:
         from rison.__version__ import __version__
 
-        self.assertEqual(__version__, "2.0.0")
+        self.assertEqual(__version__, "2.0.1")

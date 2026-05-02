@@ -30,6 +30,9 @@ Homepage = "https://github.com/betodealmeida/python-rison"
 pygments = ["pygments>=2.0"]
 dev = ["pytest", "pytest-cov", "pygments>=2.0"]
 
+[project.scripts]
+rison = "rison.cli:main"
+
 [project.entry-points."pygments.lexers"]
 rison = "rison.lexers:RisonLexer"
 orison = "rison.lexers:ORisonLexer"
